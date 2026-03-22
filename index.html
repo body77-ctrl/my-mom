@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Mother's Day ❤️</title>
+
+<style>
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #ff758c, #ff7eb3);
+    font-family: Arial;
+    text-align: center;
+    overflow-y: auto;
+    color: white;
+}
+
+img {
+    width: 300px;
+    border-radius: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px red;
+}
+
+h1, p, .poem {
+    text-shadow: 2px 2px 5px black;
+}
+
+h1 {
+    font-size: 40px;
+    margin-top: 30px;
+}
+
+p {
+    font-size: 22px;
+}
+
+.poem {
+    font-size: 24px;
+    margin-top: 20px;
+    font-weight: bold;
+    line-height: 40px;
+}
+
+/* hearts */
+.heart {
+    position: fixed;
+    color: red;
+    animation: fall 5s linear infinite;
+}
+
+@keyframes fall {
+    0% { top: -10%; opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+}
+
+</style>
+</head>
+
+<body>
+
+<h1 id="title"></h1>
+<img src="photo.jpg">
+<p id="line1"></p>
+<p id="line2"></p>
+<div class="poem" id="poem"></div>
+
+<audio id="mysong" loop>
+  <source src="song.mp3" type="audio/mp3">
+</audio>
+
+<script>
+
+// الكتابة التدريجية
+function typeText(element, text, speed, callback) {
+    let i = 0;
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        } else if (callback) {
+            callback();
+        }
+    }
+    typing();
+}
+
+// الشعر سطر سطر
+let poemLines = [
+"✨ امي هي روحي هي قلبي هي دمي ✨",
+"هفضل احبك طول العمر ❤️",
+"",
+"انتي مش عارفه حبي ليكي قد ايه",
+"ايوه بحبك انتي بس",
+"",
+"مانتي اللي صدقتي حلمي",
+"انتي الجمال والحنان والحب والصدق",
+"",
+"والحلاوة والامان كله فيكي",
+"حبي ليكي غير محال",
+"",
+"كل ده اختصرته في كلمة واحده وهي",
+"🌹 امي حبيبتي منال 🌹"
+];
+
+function typePoem(index) {
+    if (index >= poemLines.length) return;
+    let div = document.createElement("div");
+    document.getElementById("poem").appendChild(div);
+    typeText(div, poemLines[index], 50, function() {
+        typePoem(index + 1);
+    });
+}
+
+// القلوب
+function createHeart() {
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 20 + 20 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => { heart.remove(); }, 5000);
+}
+
+// التشغيل التلقائي مع رفع الصوت تدريجي
+window.addEventListener('load', () => {
+    let song = document.getElementById("mysong");
+    song.volume = 0; // يبدأ صامت
+    let playPromise = song.play();
+    if (playPromise !== undefined) {
+        playPromise.then(() => {
+            // بعد ثانية أو ثانيتين نرفع الصوت تدريجي
+            let vol = 0;
+            let fade = setInterval(() => {
+                vol += 0.05;
+                if (vol >= 1) { vol = 1; clearInterval(fade); }
+                song.volume = vol;
+            }, 200);
+        }).catch(() => {
+            console.log("Autoplay prevented. User interaction needed.");
+        });
+    }
+
+    // بدء الكتابة التدريجية والشعر والقلب مباشرة
+    typeText(
+        document.getElementById("title"),
+        "Happy Mother's Day ❤️",
+        100,
+        function () {
+            typeText(
+                document.getElementById("line1"),
+                "My mother is my life",
+                80,
+                function () {
+                    typeText(
+                        document.getElementById("line2"),
+                        "I love you forever ❤️",
+                        80,
+                        function () {
+                            typePoem(0);
+                        }
+                    )
+                }
+            )
+        }
+    );
+
+    // بدء القلوب
+    setInterval(createHeart, 300);
+});
+
+</script>
+
+</body>
+</html>
